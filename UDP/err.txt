@@ -1,0 +1,243 @@
+testMain.cpp:6:1: error: expected initializer before ‘using’
+ using boost::asio::ip::udp;
+ ^
+testMain.cpp: In function ‘int main(int, char**)’:
+testMain.cpp:19:69: error: ‘UDPSend’ was not declared in this scope
+   while(!UDPSend(argv[1], boost::lexical_cast<int>(argv[2]), pTcData))
+                                                                     ^
+testMain.cpp:29:83: error: ‘UDPSend’ was not declared in this scope
+                 while(!UDPSend(argv[1], boost::lexical_cast<int>(argv[2]), argv[3]))
+                                                                                   ^
+testMain.cpp:49:83: error: ‘UDPSend’ was not declared in this scope
+                 while(!UDPSend(argv[1], boost::lexical_cast<int>(argv[2]), pTcData))
+                                                                                   ^
+UDPSend.h:1:52: error: expected initializer at end of input
+ bool UDPSend(char* sAddress, int iPort, char* sData) //Sends sData to destination at sAddress through their port of iPort. Only returns true if an error occurs.
+                                                    ^
+UDPSend.cpp:4:1: error: expected initializer before ‘using’
+ using boost::asio::ip::udp;
+ ^
+UDPSend.cpp: In function ‘bool UDPSend(char*, int, char*)’:
+UDPSend.cpp:13:29: error: ‘udp’ has not been declared
+                 socket.open(udp::v4()); //Opens a socket on UDP over IPV4
+                             ^
+UDPSend.cpp:14:82: error: no matching function for call to ‘buffer(unsigned int, boost::asio::ip::udp::endpoint&)’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+UDPSend.cpp:14:82: note: candidates are:
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:704:26: note: boost::asio::mutable_buffers_1 boost::asio::buffer(const boost::asio::mutable_buffer&)
+ inline mutable_buffers_1 buffer(const mutable_buffer& b)
+                          ^
+/usr/include/boost/asio/buffer.hpp:704:26: note:   candidate expects 1 argument, 2 provided
+/usr/include/boost/asio/buffer.hpp:716:26: note: boost::asio::mutable_buffers_1 boost::asio::buffer(const boost::asio::mutable_buffer&, std::size_t)
+ inline mutable_buffers_1 buffer(const mutable_buffer& b,
+                          ^
+/usr/include/boost/asio/buffer.hpp:716:26: note:   no known conversion for argument 1 from ‘unsigned int’ to ‘const boost::asio::mutable_buffer&’
+/usr/include/boost/asio/buffer.hpp:733:24: note: boost::asio::const_buffers_1 boost::asio::buffer(const boost::asio::const_buffer&)
+ inline const_buffers_1 buffer(const const_buffer& b)
+                        ^
+/usr/include/boost/asio/buffer.hpp:733:24: note:   candidate expects 1 argument, 2 provided
+/usr/include/boost/asio/buffer.hpp:745:24: note: boost::asio::const_buffers_1 boost::asio::buffer(const boost::asio::const_buffer&, std::size_t)
+ inline const_buffers_1 buffer(const const_buffer& b,
+                        ^
+/usr/include/boost/asio/buffer.hpp:745:24: note:   no known conversion for argument 1 from ‘unsigned int’ to ‘const boost::asio::const_buffer&’
+/usr/include/boost/asio/buffer.hpp:762:26: note: boost::asio::mutable_buffers_1 boost::asio::buffer(void*, std::size_t)
+ inline mutable_buffers_1 buffer(void* data, std::size_t size_in_bytes)
+                          ^
+/usr/include/boost/asio/buffer.hpp:762:26: note:   no known conversion for argument 2 from ‘boost::asio::ip::udp::endpoint {aka boost::asio::ip::basic_endpoint<boost::asio::ip::udp>}’ to ‘std::size_t {aka unsigned int}’
+/usr/include/boost/asio/buffer.hpp:771:24: note: boost::asio::const_buffers_1 boost::asio::buffer(const void*, std::size_t)
+ inline const_buffers_1 buffer(const void* data,
+                        ^
+/usr/include/boost/asio/buffer.hpp:771:24: note:   no known conversion for argument 2 from ‘boost::asio::ip::udp::endpoint {aka boost::asio::ip::basic_endpoint<boost::asio::ip::udp>}’ to ‘std::size_t {aka unsigned int}’
+/usr/include/boost/asio/buffer.hpp:785:26: note: template<class PodType, unsigned int N> boost::asio::mutable_buffers_1 boost::asio::buffer(PodType (&)[N])
+ inline mutable_buffers_1 buffer(PodType (&data)[N])
+                          ^
+/usr/include/boost/asio/buffer.hpp:785:26: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘PodType [N]’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:798:26: note: template<class PodType, unsigned int N> boost::asio::mutable_buffers_1 boost::asio::buffer(PodType (&)[N], std::size_t)
+ inline mutable_buffers_1 buffer(PodType (&data)[N],
+                          ^
+/usr/include/boost/asio/buffer.hpp:798:26: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘PodType [N]’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:815:24: note: template<class PodType, unsigned int N> boost::asio::const_buffers_1 boost::asio::buffer(const PodType (&)[N])
+ inline const_buffers_1 buffer(const PodType (&data)[N])
+                        ^
+/usr/include/boost/asio/buffer.hpp:815:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const PodType [N]’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:828:24: note: template<class PodType, unsigned int N> boost::asio::const_buffers_1 boost::asio::buffer(const PodType (&)[N], std::size_t)
+ inline const_buffers_1 buffer(const PodType (&data)[N],
+                        ^
+/usr/include/boost/asio/buffer.hpp:828:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const PodType [N]’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:914:26: note: template<class PodType, unsigned int N> boost::asio::mutable_buffers_1 boost::asio::buffer(boost::array<PodType, N>&)
+ inline mutable_buffers_1 buffer(boost::array<PodType, N>& data)
+                          ^
+/usr/include/boost/asio/buffer.hpp:914:26: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘boost::array<PodType, N>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:928:26: note: template<class PodType, unsigned int N> boost::asio::mutable_buffers_1 boost::asio::buffer(boost::array<PodType, N>&, std::size_t)
+ inline mutable_buffers_1 buffer(boost::array<PodType, N>& data,
+                          ^
+/usr/include/boost/asio/buffer.hpp:928:26: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘boost::array<PodType, N>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:945:24: note: template<class PodType, unsigned int N> boost::asio::const_buffers_1 boost::asio::buffer(boost::array<const PodType, N>&)
+ inline const_buffers_1 buffer(boost::array<const PodType, N>& data)
+                        ^
+/usr/include/boost/asio/buffer.hpp:945:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘boost::array<const PodType, N>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:959:24: note: template<class PodType, unsigned int N> boost::asio::const_buffers_1 boost::asio::buffer(boost::array<const PodType, N>&, std::size_t)
+ inline const_buffers_1 buffer(boost::array<const PodType, N>& data,
+                        ^
+/usr/include/boost/asio/buffer.hpp:959:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘boost::array<const PodType, N>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:978:24: note: template<class PodType, unsigned int N> boost::asio::const_buffers_1 boost::asio::buffer(const boost::array<PodType, N>&)
+ inline const_buffers_1 buffer(const boost::array<PodType, N>& data)
+                        ^
+/usr/include/boost/asio/buffer.hpp:978:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const boost::array<PodType, N>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:992:24: note: template<class PodType, unsigned int N> boost::asio::const_buffers_1 boost::asio::buffer(const boost::array<PodType, N>&, std::size_t)
+ inline const_buffers_1 buffer(const boost::array<PodType, N>& data,
+                        ^
+/usr/include/boost/asio/buffer.hpp:992:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const boost::array<PodType, N>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:1109:26: note: template<class PodType, class Allocator> boost::asio::mutable_buffers_1 boost::asio::buffer(std::vector<_Tp, _Alloc>&)
+ inline mutable_buffers_1 buffer(std::vector<PodType, Allocator>& data)
+                          ^
+/usr/include/boost/asio/buffer.hpp:1109:26: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘std::vector<_Tp, _Alloc>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:1132:26: note: template<class PodType, class Allocator> boost::asio::mutable_buffers_1 boost::asio::buffer(std::vector<_Tp, _Alloc>&, std::size_t)
+ inline mutable_buffers_1 buffer(std::vector<PodType, Allocator>& data,
+                          ^
+/usr/include/boost/asio/buffer.hpp:1132:26: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘std::vector<_Tp, _Alloc>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:1158:24: note: template<class PodType, class Allocator> boost::asio::const_buffers_1 boost::asio::buffer(const std::vector<_Tp, _Alloc>&)
+ inline const_buffers_1 buffer(
+                        ^
+/usr/include/boost/asio/buffer.hpp:1158:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const std::vector<_Tp, _Alloc>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:1182:24: note: template<class PodType, class Allocator> boost::asio::const_buffers_1 boost::asio::buffer(const std::vector<_Tp, _Alloc>&, std::size_t)
+ inline const_buffers_1 buffer(
+                        ^
+/usr/include/boost/asio/buffer.hpp:1182:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const std::vector<_Tp, _Alloc>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:1205:24: note: template<class Elem, class Traits, class Allocator> boost::asio::const_buffers_1 boost::asio::buffer(const std::basic_string<_CharT, _Traits, _Alloc>&)
+ inline const_buffers_1 buffer(
+                        ^
+/usr/include/boost/asio/buffer.hpp:1205:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const std::basic_string<_CharT, _Traits, _Alloc>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
+In file included from /usr/include/boost/asio/detail/reactive_socket_service.hpp:22:0,
+                 from /usr/include/boost/asio/datagram_socket_service.hpp:30,
+                 from /usr/include/boost/asio/basic_datagram_socket.hpp:21,
+                 from /usr/include/boost/asio.hpp:21,
+                 from UDPSend.cpp:1:
+/usr/include/boost/asio/buffer.hpp:1228:24: note: template<class Elem, class Traits, class Allocator> boost::asio::const_buffers_1 boost::asio::buffer(const std::basic_string<_CharT, _Traits, _Alloc>&, std::size_t)
+ inline const_buffers_1 buffer(
+                        ^
+/usr/include/boost/asio/buffer.hpp:1228:24: note:   template argument deduction/substitution failed:
+UDPSend.cpp:14:82: note:   mismatched types ‘const std::basic_string<_CharT, _Traits, _Alloc>’ and ‘unsigned int’
+                 socket.send_to(boost::asio::buffer((sData, sizeof(sData)), target);
+                                                                                  ^
