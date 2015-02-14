@@ -1,0 +1,33 @@
+/tmp/ccVKu83k.o: In function `main':
+colorFilter.cpp:(.text+0x41): undefined reference to `cv::VideoCapture::VideoCapture(int)'
+colorFilter.cpp:(.text+0xa6): undefined reference to `cv::namedWindow(std::string const&, int)'
+colorFilter.cpp:(.text+0xd2): undefined reference to `cv::VideoCapture::operator>>(cv::Mat&)'
+colorFilter.cpp:(.text+0xf2): undefined reference to `cv::VideoCapture::operator>>(cv::Mat&)'
+colorFilter.cpp:(.text+0x11e): undefined reference to `cv::_OutputArray::_OutputArray(cv::Mat&)'
+colorFilter.cpp:(.text+0x137): undefined reference to `cv::_InputArray::_InputArray(cv::Mat const&)'
+colorFilter.cpp:(.text+0x151): undefined reference to `cv::cvtColor(cv::_InputArray const&, cv::_OutputArray const&, int, int)'
+colorFilter.cpp:(.text+0x1ad): undefined reference to `cv::split(cv::Mat const&, cv::Mat*)'
+colorFilter.cpp:(.text+0x1c5): undefined reference to `cv::_InputArray::_InputArray(cv::Mat const&)'
+colorFilter.cpp:(.text+0x20e): undefined reference to `cv::imshow(std::string const&, cv::_InputArray const&)'
+colorFilter.cpp:(.text+0x24a): undefined reference to `cv::_OutputArray::_OutputArray(cv::Mat&)'
+colorFilter.cpp:(.text+0x2d2): undefined reference to `cv::_InputArray::_InputArray(cv::Mat const&)'
+colorFilter.cpp:(.text+0x2f6): undefined reference to `cv::inRange(cv::_InputArray const&, cv::_InputArray const&, cv::_InputArray const&, cv::_OutputArray const&)'
+colorFilter.cpp:(.text+0x30e): undefined reference to `cv::_InputArray::_InputArray(cv::Mat const&)'
+colorFilter.cpp:(.text+0x357): undefined reference to `cv::imshow(std::string const&, cv::_InputArray const&)'
+colorFilter.cpp:(.text+0x394): undefined reference to `cv::_OutputArray::_OutputArray(cv::Mat&)'
+colorFilter.cpp:(.text+0x3ae): undefined reference to `cv::merge(cv::Mat const*, unsigned int, cv::_OutputArray const&)'
+colorFilter.cpp:(.text+0x3c7): undefined reference to `cv::_OutputArray::_OutputArray(cv::Mat&)'
+colorFilter.cpp:(.text+0x3e0): undefined reference to `cv::_InputArray::_InputArray(cv::Mat const&)'
+colorFilter.cpp:(.text+0x3fa): undefined reference to `cv::cvtColor(cv::_InputArray const&, cv::_OutputArray const&, int, int)'
+colorFilter.cpp:(.text+0x413): undefined reference to `cv::_InputArray::_InputArray(cv::Mat const&)'
+colorFilter.cpp:(.text+0x45c): undefined reference to `cv::imshow(std::string const&, cv::_InputArray const&)'
+colorFilter.cpp:(.text+0x48d): undefined reference to `cv::waitKey(int)'
+colorFilter.cpp:(.text+0x4d7): undefined reference to `cv::VideoCapture::~VideoCapture()'
+colorFilter.cpp:(.text+0x5de): undefined reference to `cv::VideoCapture::~VideoCapture()'
+/tmp/ccVKu83k.o: In function `cv::Mat::~Mat()':
+colorFilter.cpp:(.text._ZN2cv3MatD2Ev[_ZN2cv3MatD5Ev]+0x2f): undefined reference to `cv::fastFree(void*)'
+/tmp/ccVKu83k.o: In function `cv::Mat::release()':
+colorFilter.cpp:(.text._ZN2cv3Mat7releaseEv[_ZN2cv3Mat7releaseEv]+0x3b): undefined reference to `cv::Mat::deallocate()'
+/tmp/ccVKu83k.o: In function `cv::_InputArray::_InputArray(cv::Scalar_<double> const&)':
+colorFilter.cpp:(.text._ZN2cv11_InputArrayC2ERKNS_7Scalar_IdEE[_ZN2cv11_InputArrayC5ERKNS_7Scalar_IdEE]+0xb): undefined reference to `vtable for cv::_InputArray'
+collect2: error: ld returned 1 exit status
