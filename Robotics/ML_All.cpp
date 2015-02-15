@@ -19,7 +19,7 @@ int main( int argc, char* argv[] ) {
 
 void sharpenTest() {
 
-	Mat image, image_gray, dst, abs_dst;
+	Mat image, image2, resImg, detailImg, image_gray, dst, abs_dst, kernel;
 	int kernel_size = 3;
 	int scale = 1;
 	int delta = 0;
@@ -34,6 +34,8 @@ void sharpenTest() {
 	int maxS2 = 245;
 	int minV2 = 230; // neon value = 255 (1.0)
 	int maxV2 = 255;
+	int Radius = 7;
+
 
 	// load video
 	VideoCapture cap(0);
@@ -47,12 +49,40 @@ void sharpenTest() {
 		cap>>image;
 
 		// Gaussian (blur)
-		GaussianBlur( image, image, Size(7,7), 3, 0, BORDER_DEFAULT );
+		GaussianBlur(image, image, Size(7,7), 7, 4, BORDER_DEFAULT);
 		imshow("Gaussian", image);
+	
+		// Double Gaussian (gives error)
+/*		GaussianBlur(image, image2, Size(7,7), 7, 4, BORDER_DEFAULT);
+		filter2D (image2, resImg, -1, kernel , Point(-1,-1), 0, BORDER_DEFAULT); // Double Gaussian (gives error)
+		detailImg = image - resImg;
+		image = resImg + detailImg;
+		imshow("DoubleGaussian", image);
+*/
+
+/*		// MATLAB version of Double Gaussian (reference only)
+		int Radius = 7;
+		int EdgeStrength = 4;
+
+		LPF = fspecial('gaussian', Radius, EdgeStrength);
+
+		detailImg = origImg - imfilter(origImg, LPF, 'replicate');
+
+		resultImg = imfilter(origImg, LPF, 'replicate') + detailImg;
+
+
+
+		// Another way is to use conv2 function rather than imfilter
+
+		detailImg = origImg - conv2(origImg, LPF, 'same');
+
+		resultImg = conv2(origImg, LPF, 'same') + detailImg;
+*/
+
 
 		cvtColor(image, image, CV_BGR2HSV); // convert from RGB to HSV
 		split(image, channels);
-/*		imshow("PreHue", channels[0]); // Hue before thresholds
+		imshow("PreHue", channels[0]); // Hue before thresholds
 		// yellow tote color filter
 		inRange(channels[0], Scalar(minH), Scalar(maxH), channels[0]);
 		imshow("Hue", channels[0]); // Hue with non-yellow removed
@@ -65,8 +95,8 @@ void sharpenTest() {
 			channels[2] = channels[0];
 		merge(channels, 3, image);
 		imshow("PreCanny", image);
-*/		
-
+		
+/*
 		// reflective tape color filter
 		imshow("PreHueReflective", channels[0]);
 		inRange(channels[0], Scalar(minH2), Scalar(maxH2), channels[0]);
@@ -77,7 +107,7 @@ void sharpenTest() {
 		imshow("PreValueReflective", channels[2]);
 		inRange(channels[2], Scalar(minV2), Scalar(maxV2), channels[2]);
 		imshow("ValueReflective", channels[2]);	
-
+		
 		// Canny (edge detection) 
 		dilate(image, image, Mat());
 		split(image, channels);
@@ -86,7 +116,7 @@ void sharpenTest() {
 			channels[2] = channels[0];
 		merge(channels, 3, image);
 		imshow("Canny", image);
-		
+*/		
 		
 
 		// Hough Line

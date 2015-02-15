@@ -1,0 +1,21 @@
+
+
+// Below is Double Blur matlab code
+// - this is rather simple
+
+int Radius = 7;
+int EdgeStrength = 4;
+
+LPF = fspecial('gaussian', Radius, EdgeStrength);
+
+detailImg = origImg - imfilter(origImg, LPF, 'replicate');
+
+resultImg = imfilter(origImg, LPF, 'replicate') + detailImg;
+
+
+
+// Another way is to use conv2 function rather than imfilter
+
+detailImg = origImg - conv2(origImg, LPF, 'same');
+
+resultImg = conv2(origImg, LPF, 'same') + detailImg;
