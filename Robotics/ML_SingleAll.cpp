@@ -8,45 +8,42 @@
 using namespace cv;
 using namespace std;
 
-//void sharpenTest( Mat image );
-void sharpenTest();
+void sharpenTest( Mat image );
+//void sharpenTest();
 
 int main( int argc, char* argv[] ) {
 
-//	Mat image;
-//	image = imread("input.jpg");
-//	sharpenTest(image);
-	sharpenTest();
+	Mat image;
+	image = imread("input.jpg");
+	sharpenTest(image);
+//	sharpenTest();
 	return 0;
 
 }
 
-//void sharpenTest( Mat image ) {
-void sharpenTest() {
+void sharpenTest( Mat image ) {
+//void sharpenTest() {
 
-	Mat image, image_gray, dst, abs_dst;
+	Mat image_gray, dst, abs_dst;
 	int kernel_size = 3;
 	int scale = 1;
 	int delta = 0;
 	int ddepth = CV_16S;
-//	int minH = 30;
-//	int maxH = 50;
-	int minH = 0;
-	int maxH = 255;
-	int minS = 190;
+	int minH = 20;
+	int maxH = 40;
+	int minS = 150;
 	int maxS = 255;
-	Mat * channels = new Mat [3];
 
-	// load video
-	VideoCapture cap(0);
+/*	// load video
+	VideoCapture cap(1);
 	if(!cap.isOpened()) {
 		cout<< "Error \n";
 		return;
- 	}
+ 	}*/
 	
-	while(true) { // gaussian, color filter, canny, sharpen, hough
-		
-		cap>>image;
+//	while(true) { // gaussian, color filter, canny, sharpen, hough
+		Mat * channels = new Mat[3];	
+//		cap>>image;
 
 		// Gaussian (blur)
 		GaussianBlur( image, image, Size(7,7), 3, 0, BORDER_DEFAULT );
@@ -54,7 +51,7 @@ void sharpenTest() {
 
 		// color filter 
 		cvtColor(image, image, CV_BGR2HSV);
-		imshow("test", image);
+		imshow("HSV pure", image);
 		split(image, channels);
 		imshow("PreHue", channels[0]); // Hue before thresholds
 		inRange(channels[0], Scalar(minH), Scalar(maxH), channels[0]);
@@ -67,7 +64,7 @@ void sharpenTest() {
 			channels[1] = channels[0];
 			channels[2] = channels[0];
 		merge(channels, 3, image);
-/*		
+		
 		// Canny (edge detection) 
 		dilate(image,image, Mat());
 		split(image, channels);
@@ -79,9 +76,9 @@ void sharpenTest() {
 		
 
 		// Hough Line
-//		vector<Vec4i> lines;
-*/		
-//		HoughLines(channels[0], lines, 5, CV_PI/90, 10, 20, 50);
+		//vector<Vec4i> lines;
+		
+		//HoughLines(channels[0], lines, 5, CV_PI/90, 10, 20, 50);
 		/*source, dest, resolution of parameter r in pixels, theta size radians (CV_PI/90 = 2 degrees), Min intersections for lines, Minimum line length, max gap between line points
 		merge(channels, 3, image);
 		for(size_t i = 0; i < lines.size(); i++);
@@ -89,11 +86,10 @@ void sharpenTest() {
 			Vec4i l = lines[i];
   			line( channels[0], Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 		}*/
-//		imshow("Edges", channels[0]);
+		imshow("Edges", channels[0]);
 		// imshow("hough", image);
-//		delete[] channels;
 		// imshow("Output", image);
-/*
+
 
 		imshow("Pre", image);
 
@@ -111,10 +107,11 @@ void sharpenTest() {
 			addWeighted(image, 1, abs_dst, 2, 0, image); 
 
 		imshow("Laplacian", image);
-*/
-//		waitKey(0);
-		waitKey(1);
-	}
+
+		waitKey(0);
+		delete [] channels;
+//		waitKey(1);
+//	}
 
 }
 
