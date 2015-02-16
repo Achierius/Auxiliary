@@ -10,14 +10,16 @@ using namespace cv;
 
 void code();
 
-int main( int argc, char* argv[] ) {
+int main( int argc, char* argv[] )
+{
 
 	code();
 	return 0;
 
 }
 
-void code() {
+void code()
+{
 
 	VideoCapture camera(0);
 	Mat image;
@@ -26,7 +28,8 @@ void code() {
 	int minS = 150;
 	int maxS = 255;
 
-	while(true) { // guided, color filter, canny, sharpen, hough
+	while(true)
+	{ // guided, color filter, canny, sharpen, hough
 		VideoCapture camera
 		camera>>image;
 		cvtColor(image, image, CV_BGR2HSV);
