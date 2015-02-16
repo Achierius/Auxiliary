@@ -8,16 +8,16 @@
 using namespace cv;
 using namespace std;
 
-void sharpenTest();
+void work();
 
 int main( int argc, char* argv[] ) {
 
-	sharpenTest();
+	work();
 	return 0;
 
 }
 
-void sharpenTest() {
+void work() {
 
 	Mat image, image2, resImg, detailImg, image_gray, dst, abs_dst, kernel;
 	int kernel_size = 3;
@@ -25,23 +25,15 @@ void sharpenTest() {
 	int delta = 0;
 	int ddepth = CV_16S;
 	int minH = 20;
-	int maxH = 60;
-	int minS = 150;
+	int maxH = 40;
+	int minS = 100;
 	int maxS = 255;
 
-/*	int minH2 = 60; // neon hue = 78 (156.7)
-	int maxH2 = 90;
-	int minS2 = 0; // neon sat = 234.6 (0.92)
-	int maxS2 = 60;
-	int minV2 = 230; // neon value = 255 (1.0)
-	int maxV2 = 255;
-*/
-
-	int minH2 = 95; // neon hue = 123 (174)
-	int maxH2 = 145;
-	int minS2 = 130; // neon sat = 155 (0.61)
-	int maxS2 = 180;
-	int minV2 = 215; // neon value = 255 (1.0)
+	int minH2 = 45; // neon hue = 123 (174)
+	int maxH2 = 95;
+	int minS2 = 0; // neon sat = 155 (0.61)
+	int maxS2 = 80;
+	int minV2 = 210; // neon value = 255 (1.0)
 	int maxV2 = 255;
 
 
@@ -53,7 +45,8 @@ void sharpenTest() {
  	}
 	
 	while(true) { // gaussian, color filter, canny, sharpen, hough
-		Mat * channels = new Mat[3];	
+		Mat * channels = new Mat[3];
+		Mat * channels2 = new Mat[3];	
 		cap>>image;
 
 		// Gaussian (blur)
@@ -90,42 +83,48 @@ void sharpenTest() {
 
 		cvtColor(image, image, CV_BGR2HSV); // convert from RGB to HSV
 		split(image, channels);
+		split(image, channels2);
 
 		// yellow tote color filter
-/*		imshow("PreHue", channels[0]); // Hue before thresholds
+//		imshow("PreHueY", channels[0]); // Hue before thresholds
 		inRange(channels[0], Scalar(minH), Scalar(maxH), channels[0]);
-		imshow("Hue", channels[0]); // Hue with non-yellow removed
-		imshow("PreSat", channels[1]); // Sat before thresholds
+		imshow("HueY", channels[0]); // Hue with non-yellow removed
+//		imshow("PreSatY", channels[1]); // Sat before thresholds
 		inRange(channels[1], Scalar(minS), Scalar(maxS), channels[1]);
-		imshow("Sat", channels[1]); // Sat 
+		imshow("SatY", channels[1]); // Sat 
 		bitwise_and(channels[0], channels[1], channels[0]);
-		imshow("And", channels[0]); // Hue + Sat
+		imshow("HS AndY", channels[0]); // Hue + Sat
 			channels[1] = channels[0];
 			channels[2] = channels[0];
 		merge(channels, 3, image);
-		imshow("PreCanny", image);
+		imshow("PreCannyY", image);
 		
-*/
 		// reflective tape color filter
-		imshow("PreHue", channels[0]);
-		inRange(channels[0], Scalar(minH2), Scalar(maxH2), channels[0]);
-		imshow("Hue", channels[0]);
-		imshow("PreSat", channels[1]);
-		inRange(channels[1], Scalar(minS2), Scalar(maxS2), channels[1]);	
-		imshow("Sat", channels[1]);
-		imshow("PreValue", channels[2]);
-		inRange(channels[2], Scalar(minV2), Scalar(maxV2), channels[2]);
-		imshow("Value", channels[2]);	
-		bitwise_and(channels[0], channels[1], channels[1]);
-		bitwise_and(channels[1], channels[2], channels[2]);
-		imshow("HS And", channels[1]);
-		imshow("SV And", channels[2]);
-		erode(channels[2], channels[2], Mat());
-		dilate(channels[2], channels[2], Mat());
-			channels[0] = channels[2];
-			channels[1] = channels[2];
-		merge(channels, 3, image);		
+//		imshow("PreHueR", channels2[0]);
+		inRange(channels2[0], Scalar(minH2), Scalar(maxH2), channels2[0]);
+		imshow("HueR", channels2[0]);
+//		imshow("PreSatR", channels2[1]);
+		inRange(channels2[1], Scalar(minS2), Scalar(maxS2), channels2[1]);	
+		imshow("SatR", channels2[1]);
+//		imshow("PreValueR", channels[2]);
+		inRange(channels2[2], Scalar(minV2), Scalar(maxV2), channels2[2]);
+		imshow("ValueR", channels2[2]);	
+		bitwise_and(channels2[0], channels2[1], channels2[1]);
+		bitwise_and(channels2[1], channels2[2], channels2[2]);
+		imshow("HS AndR", channels[1]);
+		imshow("SV AndR", channels[2]);
+		erode(channels2[2], channels2[2], Mat());
+		dilate(channels2[2], channels2[2], Mat());
+			channels2[0] = channels2[2];
+			channels2[1] = channels2[2];
+		merge(channels2, 3, image2);		
+		imshow("PreCannyR", image2);
+		addWeighted(image, 1, image2, 1, 0, image);	
+		imshow("PreCannyAll", image);
 
+		erode(image, image, Mat());
+		dilate(image, image, Mat());
+	
 		// Canny (edge detection) 
 		dilate(image, image, Mat());
 		split(image, channels);
@@ -169,6 +168,7 @@ void sharpenTest() {
 		imshow("Laplacian", image);
 
 		delete [] channels;
+		delete [] channels2;
 		waitKey(1);
 	}
 
