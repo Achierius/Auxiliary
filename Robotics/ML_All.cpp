@@ -28,13 +28,13 @@ void sharpenTest() {
 	int maxH = 60;
 	int minS = 150;
 	int maxS = 255;
-	int minH2 = 60; // neon hue = 156.7 (111)
+
+	int minH2 = 50; // neon hue = 78 (156.7)
 	int maxH2 = 90;
-	int minS2 = 215; // neon sat = 234.6 (0.92)
-	int maxS2 = 245;
+	int minS2 = 5; // neon sat = 234.6 (0.92)
+	int maxS2 = 15;
 	int minV2 = 230; // neon value = 255 (1.0)
 	int maxV2 = 255;
-	int Radius = 7;
 
 
 	// load video
@@ -49,7 +49,7 @@ void sharpenTest() {
 		cap>>image;
 
 		// Gaussian (blur)
-		GaussianBlur(image, image, Size(7,7), 7, 4, BORDER_DEFAULT);
+		GaussianBlur(image, image, Size(7,7), 7, 7, BORDER_DEFAULT);
 		imshow("Gaussian", image);
 	
 		// Double Gaussian (gives error)
@@ -82,8 +82,9 @@ void sharpenTest() {
 
 		cvtColor(image, image, CV_BGR2HSV); // convert from RGB to HSV
 		split(image, channels);
-		imshow("PreHue", channels[0]); // Hue before thresholds
+
 		// yellow tote color filter
+/*		imshow("PreHue", channels[0]); // Hue before thresholds
 		inRange(channels[0], Scalar(minH), Scalar(maxH), channels[0]);
 		imshow("Hue", channels[0]); // Hue with non-yellow removed
 		imshow("PreSat", channels[1]); // Sat before thresholds
@@ -96,28 +97,33 @@ void sharpenTest() {
 		merge(channels, 3, image);
 		imshow("PreCanny", image);
 		
-/*
+*/
 		// reflective tape color filter
-		imshow("PreHueReflective", channels[0]);
+		imshow("PreHue", channels[0]);
 		inRange(channels[0], Scalar(minH2), Scalar(maxH2), channels[0]);
-		imshow("HueReflective", channels[0]);
-		imshow("PreSatReflective", channels[1]);
-		inRange(channels[1], Scalar(minS2), Scalar(maxH2), channels[1]);	
+		imshow("Hue", channels[0]);
+		imshow("PreSat", channels[1]);
+		inRange(channels[1], Scalar(minS2), Scalar(maxS2), channels[1]);	
 		imshow("Sat", channels[1]);
-		imshow("PreValueReflective", channels[2]);
+		imshow("PreValue", channels[2]);
 		inRange(channels[2], Scalar(minV2), Scalar(maxV2), channels[2]);
-		imshow("ValueReflective", channels[2]);	
-		
+		imshow("Value", channels[2]);	
+		bitwise_and(channels[0], channels[1], channels[1]);
+		bitwise_and(channels[1], channels[2], channels[2]);
+		imshow("HS And", channels[1]);
+		imshow("SV And", channels[2]);
+			channels[0] = channels[2];
+			channels[1] = channels[2];
+		merge(channels, 3, image);		
+
 		// Canny (edge detection) 
 		dilate(image, image, Mat());
 		split(image, channels);
-		Canny(image, channels[0], 100, 255);
-			channels[1] = channels[0];
+		Canny(image, channels[1], 100, 255);
+			channels[0] = channels[1];
 			channels[2] = channels[0];
 		merge(channels, 3, image);
-		imshow("Canny", image);
-*/		
-		
+		imshow("Canny", image);	
 
 		// Hough Line
 		//vector<Vec4i> lines;
