@@ -29,11 +29,19 @@ void sharpenTest() {
 	int minS = 150;
 	int maxS = 255;
 
-	int minH2 = 50; // neon hue = 78 (156.7)
+/*	int minH2 = 60; // neon hue = 78 (156.7)
 	int maxH2 = 90;
-	int minS2 = 5; // neon sat = 234.6 (0.92)
-	int maxS2 = 15;
+	int minS2 = 0; // neon sat = 234.6 (0.92)
+	int maxS2 = 60;
 	int minV2 = 230; // neon value = 255 (1.0)
+	int maxV2 = 255;
+*/
+
+	int minH2 = 95; // neon hue = 123 (174)
+	int maxH2 = 145;
+	int minS2 = 130; // neon sat = 155 (0.61)
+	int maxS2 = 180;
+	int minV2 = 215; // neon value = 255 (1.0)
 	int maxV2 = 255;
 
 
@@ -112,6 +120,8 @@ void sharpenTest() {
 		bitwise_and(channels[1], channels[2], channels[2]);
 		imshow("HS And", channels[1]);
 		imshow("SV And", channels[2]);
+		erode(channels[2], channels[2], Mat());
+		dilate(channels[2], channels[2], Mat());
 			channels[0] = channels[2];
 			channels[1] = channels[2];
 		merge(channels, 3, image);		
