@@ -1,7 +1,6 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-
 #include <iostream>
 
 using namespace cv;
@@ -9,8 +8,8 @@ using namespace std;
 
 Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
 
-Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
-{
+Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true) {
+
         if(DEBUG) imshow("PreFiltered", in);
         cvtColor(in, in, CV_BGR2HSV);
         Mat * channels = new Mat [3];
@@ -95,16 +94,9 @@ Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 2
 	return in;
 }
 
-int main()
-{
-	VideoCapture camera(0);
-	Mat image;
+int main(int argc, char* argv[]) {
 	namedWindow("Filtered Image", WINDOW_AUTOSIZE);
-	if(!camera.isOpened())
-	{
-		std::cout<<"Unable to open Camera\n";
-		return -1;
-	}
+	Mat image;	
 	char kill = ' ';
 	int hMin = 0;
 	int hMax = 255;
@@ -122,7 +114,7 @@ int main()
 	createTrackbar("Debug Mode", "Filtered Image", &debugMode, 2);
 	while(kill != 's' && kill != 'q')
 	{
-		camera>>image;
+		image = imread(argv[1]);
 		image = colorFilter(image, hMin, hMax, sMin, sMax, vMin, vMax, debugMode>0, debugMode>1);
 		imshow("Filtered Image", image);
 		kill = waitKey(5);
