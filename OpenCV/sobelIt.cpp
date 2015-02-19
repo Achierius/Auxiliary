@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 	int min = 50;
 	namedWindow("Preview", WINDOW_AUTOSIZE);
 	createTrackbar("Max", "Preview", &max, 500);
-	createTrackbar("Min", "Preview", &min, 499);
+	createTrackbar("Min", "Preview", &min, 450);
 	int stop = 1;
 	while(stop != 0)
 	{
