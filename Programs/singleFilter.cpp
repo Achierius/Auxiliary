@@ -9,9 +9,6 @@ using namespace cv;
 using namespace std;
 
 void singleImage(Mat image);
-/** Take pictures with 'a' and exit program using 'x'
-  * 
-  */
 
 int main( int argc, char* argv[] ) {
 	

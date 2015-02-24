@@ -34,9 +34,7 @@ Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 2
 		if(hueAltered && bitAnd)
 		{
 			bitwise_and(channels[0], channels[1], channels[0]);
-			imshow("asdf", channels[0]);
 			channels[1] = channels[0].clone();
-			imshow("kawaii", channels[1]);
 		}
         }
         if(vMin != 0 || vMax != 255)
