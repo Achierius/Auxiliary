@@ -7,11 +7,25 @@
 using namespace cv;
 using namespace std;
 
+Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY); 
+
 Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
 
 Mat dilateErode(Mat in, int holes, int noise, Mat element);
 
+Mat edgeDetect(Mat image, Mat channels, int edge_ksize, int threshLow, int threshHigh);
+
+Mat sharpen(Mat image, Mat channels, int ddepth, int sharpen_ksize, int scale, int delta);
+
 Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap);
+
+Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY) 
+{
+	if ((ksize%2 != 1) && (ksize > 1)) // kernel size must be odd and positive
+		ksize = ksize*2+1;
+	GaussianBlur(in, in, Size(ksize, ksize), sigmaX, sigmaY, BORDER_DEFAULT);
+	return in;
+}
 
 Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
 {
@@ -108,13 +122,37 @@ Mat dilateErode(Mat in, int holes, int noise, Mat element)
 	return in;
 }
 
+Mat edgeDetect(Mat image, Mat channels, int edge_ksize, int threshLow, int threshHigh)
+{
+	split(image, channels);
+	Canny(image, channels[1], threshLow, threshHigh, edge_ksize);
+		channels[0] = channels[1];
+		channels[2] = channels[0];	
+	merge(channels, 3, image);
+	return image;
+}
+
+Mat sharpen(Mat image, Mat channels, int ddepth, int sharpen_ksize, int scale, int delta)
+{
+	Mat image_gray, dst, abs_dst;
+
+	cvtColor(image, image_gray, COLOR_RGB2GRAY); // HSV to grayscale
+  	Laplacian(image_gray, dst, ddepth, Size(ksize, ksize), scale, delta, BORDER_DEFAULT);
+  	convertScaleAbs(dst, abs_dst);
+  		channels[0] = abs_dst;
+		channels[1] = abs_dst;
+		channels[2] = abs_dst;
+	merge(channels, 3, abs_dst);
+	addWeighted(image, 1, abs_dst, 2, 0, image); 
+	return image;
+}
+
 Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap)
 {
 	Mat writing;
 	
 	writing = in.clone();
 	vector<Vec4i> lines;
-	Canny(in, in, 50, 200, 3);
 	HoughLinesP(in, lines, rho, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 );
 	for( size_t i = 0; i < lines.size(); i++ )
 	{
@@ -124,16 +162,23 @@ Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGa
 	return writing;	
 }
 
-Mat gaussianBlur(Mat image) {
-	
-}
-
 int main()
 {
 	// named windows
 	namedWindow("HSV Filtered Image", WINDOW_AUTOSIZE);
 	namedWindow("Dilate and Erode", WINDOW_AUTOSIZE);
 	namedWindow("Hough Lines", WINDOW_AUTOSIZE);	
+	namedWindow("Blur Image", WINDOW_AUTOSIZE);
+	namedWindow("Edge Image", WINDOW_AUTOSIZE);
+	namedWindow("Sharpen Image", WINDOW_AUTOSIZE);
+
+	// gaussianBlur parameters
+	int blur_ksize = 1;
+	int sigmaX = 0;
+	int sigmaY = 0;
+	createTrackbar("Kernel Size", "Blur Image", &blur_ksize, 10);
+	createTrackbar("Sigma X", "Blur Image", &sigmaX, 100);
+	createTrackbar("Sigma Y", "Blur Image", &sigmaY, 100);
 
 	// colorTest parameters
 	int hMin = 0;
@@ -162,6 +207,23 @@ int main()
 	createTrackbar("Filter Size", "Dilate and Erode", &size, 10);
 	createTrackbar("Hole Iterations", "Dilate and Erode", &holes, 15);
 	
+	// edgeDetect parameters
+	int threshLow = 0;
+	int threshHigh = 255;
+	int edge_ksize = 1;
+	createTrackbar("Kernel Size", "Edge Image", &edge_ksize, 10);
+	createTrackbar("Bottom Threshold", "Edge Image", &threshLow, 255);
+	createTrackbar("Upper Threshold", "Edge Image", &threshHigh, 255);
+	
+	// sharpen parameters
+	int sharpen_ksize = 1;
+	int scale = 0; // optional scale value added to image
+	int delta = 0; // optional delta value added to image
+	int ddepth = CV_16S;
+	createTrackbar("Kernel Size", "Sharpen Image", &sharpen_ksize, 9);
+	createTrackbar("Scale", "Sharpen Image", &scale, 9);
+	createTrackbar("Delta", "Sharpen Image", &delta, 9);
+
 	// houghLine parameters
 	int rho = 1;
 	int theta = 180;
@@ -177,6 +239,7 @@ int main()
 	// video feed
 	VideoCapture camera(0);
 	Mat image;
+	Mat orig;
 	if(!camera.isOpened())
 	{
 		std::cout<<"Unable to open Camera\n";
@@ -188,13 +251,28 @@ int main()
 	while(kill != 's' && kill != 'q')
 	{
 		camera>>image;
+		orig = image.clone();
+		Mat * channels = new Mat[3];
+		imshow("Original", image);
+		image = gaussianBlur(image, blur_ksize, sigmaX, sigmaY);
+		imshow("Blur Filtered", image);
 		image = colorFilter(image, hMin, hMax, sMin, sMax, vMin, vMax, debugMode>0, debugMode>1);
 		imshow("HSV Filtered", image);
 		image = dilateErode(image, holes, noise, element);
 		imshow("Dilate and Erode Filtered", image);
+		image = edgeDetect(image, channels, edge_ksize, threshLow, threshHigh);
+		imshow("Edge Detection", image);
+		image = sharpen(image, channels, ddepth, sharpen_ksize, scale, delta);
+		imshow("Sharpen", image);
 		image = houghLines(image, rho+1, theta, threshold, lineMin, maxGap);
 		imshow("All Filtered", image);
+
+		addWeighted(image, 1, orig, 1, 3, image);
+		imshow("Final Product", image);
+		delete [] channels;
 		kill = waitKey(5);
+
+		
 	}
 	return 0;
 }
