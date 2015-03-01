@@ -13,17 +13,17 @@ Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 2
 
 Mat dilateErode(Mat in, int holes, int noise, Mat element);
 
-Mat edgeDetect(Mat image, Mat channels, int edge_ksize, int threshLow, int threshHigh);
+Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh);
 
-Mat sharpen(Mat image, Mat channels, int ddepth, int sharpen_ksize, int scale, int delta);
+Mat sharpen(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scale, int delta);
 
 Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap);
 
 Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY) 
 {
-	if ((ksize%2 != 1) && (ksize > 1)) // kernel size must be odd and positive
-		ksize = ksize*2+1;
-	GaussianBlur(in, in, Size(ksize, ksize), sigmaX, sigmaY, BORDER_DEFAULT);
+	if ((blur_ksize%2 != 1) && (blur_ksize > 1)) // kernel size must be odd and positive
+		blur_ksize = blur_ksize*2+1;
+	GaussianBlur(in, in, Size(blur_ksize, blur_ksize), sigmaX, sigmaY, BORDER_DEFAULT);
 	return in;
 }
 
@@ -109,7 +109,7 @@ Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 2
 		}
 	}
 	merge(channels, 3, in);
-	delete[] channels;
+//	delete[] channels;
 	cvtColor(in, in, CV_HSV2BGR);
 	return in;
 }
@@ -122,22 +122,22 @@ Mat dilateErode(Mat in, int holes, int noise, Mat element)
 	return in;
 }
 
-Mat edgeDetect(Mat image, Mat channels, int edge_ksize, int threshLow, int threshHigh)
+Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh)
 {
 	split(image, channels);
-	Canny(image, channels[1], threshLow, threshHigh, edge_ksize);
+	Canny(image, channels[1], threshLow, threshHigh);
 		channels[0] = channels[1];
 		channels[2] = channels[0];	
 	merge(channels, 3, image);
 	return image;
 }
 
-Mat sharpen(Mat image, Mat channels, int ddepth, int sharpen_ksize, int scale, int delta)
+Mat sharpen(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scale, int delta)
 {
 	Mat image_gray, dst, abs_dst;
 
 	cvtColor(image, image_gray, COLOR_RGB2GRAY); // HSV to grayscale
-  	Laplacian(image_gray, dst, ddepth, Size(ksize, ksize), scale, delta, BORDER_DEFAULT);
+  	Laplacian(image_gray, dst, ddepth, sharpen_ksize, scale, delta, BORDER_DEFAULT);
   	convertScaleAbs(dst, abs_dst);
   		channels[0] = abs_dst;
 		channels[1] = abs_dst;
@@ -153,13 +153,13 @@ Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGa
 	
 	writing = in.clone();
 	vector<Vec4i> lines;
-	HoughLinesP(in, lines, rho, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 );
+	HoughLinesP(in, lines, rho+1, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 );
 	for( size_t i = 0; i < lines.size(); i++ )
 	{
 		Vec4i l = lines[i];
 		line(writing, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 	}
-	return writing;	
+	return writing;
 }
 
 int main()
@@ -264,7 +264,7 @@ int main()
 		imshow("Edge Detection", image);
 		image = sharpen(image, channels, ddepth, sharpen_ksize, scale, delta);
 		imshow("Sharpen", image);
-		image = houghLines(image, rho+1, theta, threshold, lineMin, maxGap);
+		image = houghLines(image, rho, theta, threshold, lineMin, maxGap);
 		imshow("All Filtered", image);
 
 		addWeighted(image, 1, orig, 1, 3, image);
