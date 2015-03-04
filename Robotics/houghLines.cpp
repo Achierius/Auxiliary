@@ -8,9 +8,9 @@
 
 using namespace cv;
 using namespace std;
-int dist(int x1, int y1, int x2, int y2)
+double dist(double x1, double y1, double x2, int y2)
 {
-	return sqrt(((x1-x2)^2 + (y1-y2)^2));
+	return hypot ( (x1-x2) , (y1-y2) );
 }
 
 vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright, botleft, botright
@@ -32,7 +32,7 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 		if(cur[1] == 0 || cur[0] == 0 || cur[2] == 0 || cur[3] == 0)
 		{
 			continue; //This is detecting an edge as a line, ignore it	
-	}
+		}
 		
 		if(dist(0, 0, cur[0], cur[1]) < curMax)
 		{
@@ -44,6 +44,7 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 		}
 	}
 	curMax = image.rows+image.cols;
+	return points;
 	for(size_t i = 0; i < in.size(); i++) //Topright
 	{
 		Vec4i cur  = in[i];
@@ -82,6 +83,7 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 		}
 	}
 	curMax = image.rows+image.cols;
+	return points;
 	for(size_t i = 0; i < in.size(); i++) //Bottomright
 	{
 		Vec4i cur  = in[i];
@@ -130,14 +132,14 @@ int main(int argc, char** argv)
 		//imshow("Image", image);
 		cout<<enumCvType(image)<<"\n";
 		HoughLinesP(image, lines, rho, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 );
-		for( size_t i = 0; i < lines.size(); i++ )
+		for( int i = 0; i < lines.size(); i++ )
 		{
 			Vec4i l = lines[i];
 			line(writing, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 			cout<<"Line "<<i<<": ("<<l[0]<<","<<l[1]<<") by ("<<l[2]<<","<<l[3]<<")\n"; 
 		}
 		vector< pair<int, int> > cornerPoints = corners(lines, image);
-		for( size_t i = 0; i < cornerPoints.size(); i++)
+		for( size_t i = 0; i < 4; i++)
 		{
 			circle(writing, Point(cornerPoints[i].first, cornerPoints[i].second), 10, Scalar(175, 150, 150));
 		}
