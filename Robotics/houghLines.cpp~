@@ -2,7 +2,7 @@
 #include <typeinfo>
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-//#include "enumCvType.h"
+#include "enumCvType.h"
 #include <cmath>
 #include <iostream>
 
@@ -136,7 +136,7 @@ int main(int argc, char** argv)
 		Canny(pre, image, 50, 200, 3);
 		vector<Vec4i> lines;
 		//imshow("Image", image);
-//		cout<<enumCvType(image)<<"\n";
+		cout<<enumCvType(image)<<"\n";
 		HoughLinesP(image, lines, rho, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 );
 		for( int i = 0; i < lines.size(); i++ )
 		{

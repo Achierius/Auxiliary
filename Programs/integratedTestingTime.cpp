@@ -1,22 +1,22 @@
-
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <ctime>
+#include <cmath>
 
+#include <chrono>
+#include <ratio>
 #include <iostream>
 
 using namespace cv;
 using namespace std;
+using namespace std::chrono;
 
 Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY); 
 
-Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
-
-Mat dilateErode(Mat in, int holes, int noise, Mat element);
+Mat colorFilter(Mat in, int hMin, int hMax, int sMin, int sMax, int vMin, int vMax, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
 
 Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh);
-
-Mat laplacian(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scale, int delta);
 
 Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap);
 
@@ -28,11 +28,9 @@ Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY)
 	return in;
 }
 
-//Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
-//{
- 
-Mat colorFilter(Mat in, int hMin = 56, int hMax = 96, int sMin = 31, int sMax = 130, int vMin = 46, int vMax = 103, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
+Mat colorFilter(Mat in, int hMin = 20, int hMax = 60, int sMin = 60, int sMax = 140, int vMin = 190, int vMax = 255,  bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
 {
+ 
         bool hueAltered = false;
 	bool satAltered = false;
 	bool valAltered = false;
@@ -117,14 +115,6 @@ Mat colorFilter(Mat in, int hMin = 56, int hMax = 96, int sMin = 31, int sMax = 
 	return in;
 }
 
-Mat dilateErode(Mat in, int holes, int noise, Mat element)
-{
-	dilate(in, in, element, Point(-1, -1), holes);
-	erode(in, in, element, Point(-1, -1), holes+noise); //Can use cv::Mat() instead of element for the kernel matrix being used as the third argument 
-	dilate(in, in, element, Point(-1, -1), noise);
-	return in;
-}
-
 Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh)
 {
 	split(image, channels);
@@ -132,21 +122,6 @@ Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int thr
 		channels[0] = channels[1];
 		channels[2] = channels[0];	
 	merge(channels, 3, image);
-	return image;
-}
-
-Mat laplacian(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scale, int delta)
-{
-	Mat image_gray, dst, abs_dst;
-
-	cvtColor(image, image_gray, COLOR_RGB2GRAY); // HSV to grayscale
-  	Laplacian(image_gray, dst, ddepth, sharpen_ksize, scale, delta, BORDER_DEFAULT);
-  	convertScaleAbs(dst, abs_dst);
-  		channels[0] = abs_dst;
-		channels[1] = abs_dst;
-		channels[2] = abs_dst;
-	merge(channels, 3, abs_dst);
-	addWeighted(image, 1, abs_dst, 2, 0, image); 
 	return image;
 }
 
@@ -168,29 +143,29 @@ Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGa
 
 int main()
 {
-	namedWindow("Blur Editor", WINDOW_AUTOSIZE);
-	namedWindow("Color Filter Editor", WINDOW_AUTOSIZE);
-	namedWindow("Color Filter Editor", WINDOW_AUTOSIZE);
-	namedWindow("Dilate and Erode Editor", WINDOW_AUTOSIZE);
-	namedWindow("Sharpen Editor", WINDOW_AUTOSIZE);
-	namedWindow("Hough Lines Editor", WINDOW_AUTOSIZE);	
-
 	// other debug stuff
-	int blur, color, dilate_erode, edge, sharpen, hough = 1; // ability to do efficient code
-	namedWindow("Efficiency Editor", WINDOW_AUTOSIZE);
+	bool  blur, color, dilate_erode, edge, sharpen, hough = true; // ability to do efficient code
+/*	namedWindow("Efficiency Editor", WINDOW_AUTOSIZE);
 	createTrackbar("Blur Filter", "Efficiency Editor", &blur, 1);
 	createTrackbar("Color Filter", "Efficiency Editor", &color, 1);
-	createTrackbar("Dilate Erode Filter", "Efficiency Editor", &dilate_erode, 1);
 	createTrackbar("Edge Filter", "Efficiency Editor", &edge, 1);
-	createTrackbar("Sharpen Filter", "Efficiency Editor", &sharpen, 1);
 	createTrackbar("Hough Line Filter", "Efficiency Editor", &hough, 1);
 
 	namedWindow("Blur Editor", WINDOW_AUTOSIZE);
 	namedWindow("Color Filter Editor", WINDOW_AUTOSIZE);
-	namedWindow("Dilate and Erode Editor", WINDOW_AUTOSIZE);
 	namedWindow("Edge Editor", WINDOW_AUTOSIZE);
-	namedWindow("Sharpen Editor", WINDOW_AUTOSIZE);
 	namedWindow("Hough Lines Editor", WINDOW_AUTOSIZE);	
+	namedWindow("AddWeighted Editor", WINDOW_AUTOSIZE);
+
+	// doesn't work because program is simply passing by; need to put in while loop or something -Min Hoo 3/2/15
+	if (blur == 1) 
+		namedWindow("Blur Editor", WINDOW_AUTOSIZE);
+	if (color == true) 
+		namedWindow("Color Filter Editor", WINDOW_AUTOSIZE);
+	if (edge == true)
+		namedWindow("Edge Editor", WINDOW_AUTOSIZE);
+	if (hough == true)
+		namedWindow("Hough Lines Editor", WINDOW_AUTOSIZE);	
 
 	// gaussianBlur parameters
 	int blur_ksize = 1;
@@ -207,25 +182,14 @@ int main()
 	int sMax = 255;
 	int vMin = 0;
 	int vMax = 255;
-	int debugMode = 0; //0 is none, 1 is debug, 2 is debug and debugpre	
-	createTrackbar("Hue Min", "Color Filter Editor", &hMin, 255);
+*/	int debugMode = 0; //0 is none, 1 is debug, 2 is debug and debugpre	
+/*	createTrackbar("Hue Min", "Color Filter Editor", &hMin, 255);
 	createTrackbar("Hue Max", "Color Filter Editor", &hMax, 255);
 	createTrackbar("Sat Min", "Color Filter Editor", &sMin, 255);
 	createTrackbar("Sat Max", "Color Filter Editor", &sMax, 255);
 	createTrackbar("Val Min", "Color Filter Editor", &vMin, 255);
 	createTrackbar("Val Max", "Color Filter Editor", &vMax, 255);
 	createTrackbar("Debug Mode", "Color Filter Editor", &debugMode, 2);
-	
-	// erodeDilateTest parameters
-	int holes = 1;
-	int noise = 1;
-	int size = 1;
-	cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS,
-                      cv::Size(2 * size + 1, 2 * size + 1), 
-                      cv::Point(size, size) );
-	createTrackbar("Noise Iterations", "Dilate and Erode Editor", &noise, 15);
-	createTrackbar("Filter Size", "Dilate and Erode Editor", &size, 10);
-	createTrackbar("Hole Iterations", "Dilate and Erode Editor", &holes, 15);
 	
 	// edgeDetect parameters
 	int threshLow = 0;
@@ -235,15 +199,6 @@ int main()
 	createTrackbar("Bottom Threshold", "Edge Editor", &threshLow, 255);
 	createTrackbar("Upper Threshold", "Edge Editor", &threshHigh, 255);
 	
-	// sharpen parameters
-	int sharpen_ksize = 1;
-	int scale = 0; // optional scale value added to image
-	int delta = 0; // optional delta value added to image
-	int ddepth = CV_16S;
-	createTrackbar("Kernel Size", "Sharpen Editor", &sharpen_ksize, 9);
-	createTrackbar("Scale", "Sharpen Editor", &scale, 9);
-	createTrackbar("Delta", "Sharpen Editor", &delta, 9);
-
 	// houghLine parameters
 	int rho = 1;
 	int theta = 180;
@@ -255,7 +210,7 @@ int main()
 	createTrackbar("Threshold", "Hough Lines Editor", &threshold, 199);
 	createTrackbar("LineMin", "Hough Lines Editor", &lineMin, 399);
 	createTrackbar("MaxGap", "Hough Lines Editor", &maxGap, 399);
-
+*/
 	// video feed
 	VideoCapture camera(0);
 	Mat image;
@@ -269,49 +224,48 @@ int main()
 	// decide weighted sums of image and filtered image
 	int weight1 = 1;
 	int weight2 = 1;
-
+/*	createTrackbar("Filtered", "AddWeighted Editor", &weight1);
+	createTrackbar("Original", "AddWeighted Editor", &weight2);
+*/
 	char kill = ' ';
+	long time1 = 0;
+	long time2 = 0;
+	long timeTaken = 0;
+
+//	typedef duration <int, std::ratio<60*60*24>> days_type;
+//	time_point<system_clock,days_type> today = time_point_cast<days_type>(system_clock::now());
+
+	system_clock::time_point tp_epoch;
+	time_point<system_clock,duration<int>> tp_seconds (duration<int>(1));
+	system_clock::time_point tp (tp_seconds);
 	
 	while(kill != 's' && kill != 'q')
 	{
 		camera>>image;
 		orig = image.clone();
 		Mat * channels = new Mat[3];
-		if (blur == true) {
-			image = gaussianBlur(image, blur_ksize, sigmaX, sigmaY);
-//			imshow("Blur Output", image);
-		}
-		imshow("Blur Output", image);
-		if (color == true) {
-			image = colorFilter(image, hMin, hMax, sMin, sMax, vMin, vMax, debugMode>0, debugMode>1);
-//			imshow("Color Filter Output", image);
-		}
-		imshow("Color Filter Output", image);
-		if (dilate_erode == true) {
-			image = dilateErode(image, holes, noise, element);
-//			imshow("Dilate and Erode Output", image);
-		}
-		imshow("Dilate and Erode Output", image);
-		if (edge == true) {
-			image = edgeDetect(image, channels, edge_ksize, threshLow, threshHigh);
-//			imshow("Edge Detection Output", image);
-		}
-		imshow("Edge Detection Output", image);
-		if (sharpen == true) {
-			image = laplacian(image, channels, ddepth, sharpen_ksize, scale, delta);
-//			imshow("Sharpen Output", image);
-		}
-		imshow("Sharpen Output", image);
-		if (hough == true) { 
-			image = houghLines(image, rho, theta, threshold, lineMin, maxGap);
-//			imshow("Hough Lines Output", image);		
-		}
-		imshow("All Filtered", image);
+		time1 = tp.time_since_epoch().count();
+
+		image = gaussianBlur(image, 5, 10, 10);
+//		imshow("Blur Output", image);
+		image = colorFilter(image, 20, 60, 60, 190, 140, 255, debugMode>0, debugMode>1);
+//		imshow("Color Filter Output", image);
+		image = edgeDetect(image, channels, 5, 0, 255);
+//		imshow("Edge Detection Output", image);
+		image = houghLines(image, 1, 180, 49, 9, 49);
+//		imshow("Hough Lines Output", image);		
+//		imshow("All Filtered", image);
 		addWeighted(image, weight1, orig, weight2, 3, image);
 		imshow("Final Weighted Average", image);
 //		imshow("Original", orig);
+		
+		time2 = tp.time_since_epoch().count();
+		timeTaken = time2 - time1;
+		cout<<timeTaken;
+		
 		delete [] channels;
 		kill = waitKey(5);
+		
 	}
 	return 0;
 }
