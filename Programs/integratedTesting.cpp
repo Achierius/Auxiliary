@@ -165,6 +165,13 @@ Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGa
 
 int main()
 {
+	namedWindow("Blur Editor", WINDOW_AUTOSIZE);
+	namedWindow("Color Filter Editor", WINDOW_AUTOSIZE);
+	namedWindow("Color Filter Editor", WINDOW_AUTOSIZE);
+	namedWindow("Dilate and Erode Editor", WINDOW_AUTOSIZE);
+	namedWindow("Sharpen Editor", WINDOW_AUTOSIZE);
+	namedWindow("Hough Lines Editor", WINDOW_AUTOSIZE);	
+
 	// other debug stuff
 	int blur, color, dilate_erode, edge, sharpen, hough = 0; // ability to do efficient code
 	namedWindow("Efficiency Editor", WINDOW_AUTOSIZE);
