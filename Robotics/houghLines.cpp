@@ -37,14 +37,15 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 		if(dist(0, 0, cur[0], cur[1]) < curMax)
 		{
 			points[0] = make_pair(cur[0], cur[1]);
+			curMax = dist(0, 0, cur[0], cur[1]);
 		}
 		if(dist(0, 0, cur[2], cur[3]) < curMax)
 		{
 			points[0] = make_pair(cur[2], cur[3]);
+			curMax = dist(0, 0, cur[2], cur[3]);
 		}
 	}
 	curMax = image.rows+image.cols;
-	return points;
 	for(size_t i = 0; i < in.size(); i++) //Topright
 	{
 		Vec4i cur  = in[i];
@@ -57,10 +58,12 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 		if(dist(image.cols, 0, cur[0], cur[1]) < curMax)
 		{
 			points[1] = make_pair(cur[0], cur[1]);
+			curMax = dist(image.cols, 0, cur[0], cur[1]);
 		}
 		if(dist(image.cols, 0, cur[2], cur[3]) < curMax)
 		{
 			points[1] = make_pair(cur[2], cur[3]);
+			curMax = dist(image.cols, 0, cur[2], cur[3]);
 		}
 	}
 	curMax = image.rows+image.cols;
@@ -76,14 +79,15 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 		if(dist(0, image.rows, cur[0], cur[1]) < curMax)
 		{
 			points[2] = make_pair(cur[0], cur[1]);
+			curMax = dist(0, image.rows, cur[0], cur[1]);
 		}
 		if(dist(0, image.rows, cur[2], cur[3]) < curMax)
 		{
 			points[2] = make_pair(cur[2], cur[3]);
+			curMax = dist(0, image.rows, cur[2], cur[3]);
 		}
 	}
 	curMax = image.rows+image.cols;
-	return points;
 	for(size_t i = 0; i < in.size(); i++) //Bottomright
 	{
 		Vec4i cur  = in[i];
@@ -92,10 +96,12 @@ vector<pair<int, int> > corners(vector<Vec4i> in, Mat image) //Topleft, Topright
 			if(dist(image.cols, image.rows, cur[0], cur[1]) < curMax)
 			{
 				points[3] = make_pair(cur[0], cur[1]);
+				curMax = dist(image.cols, image.cols, cur[0], cur[1]);
 			}
 			if(dist(image.cols, image.rows, cur[2], cur[3]) < curMax)
 			{
 				points[3] = make_pair(cur[2], cur[3]);
+				curMax = dist(image.cols, image.rows, cur[2], cur[3]);	
 			}
 		}
 	}
