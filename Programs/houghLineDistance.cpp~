@@ -191,7 +191,7 @@ int main()
 		width = dist(cornerPoints[0].first, cornerPoints[0].second, cornerPoints[1], cornerPoints[1]);	
 		height = dist(cornerPoints[2].first, cornerPoints[2].second, cornerPoints[3], cornerPoints[3]);	
 		if ((width/height) == RATIO) {
-			cout<<"Object is can"; 
+		// THIS IS WHERE I FINISHED LAST`	
 		}
 		addWeighted(image, weight1, orig, weight2, 3, image);
 		imshow("Final Weighted Average", image);
