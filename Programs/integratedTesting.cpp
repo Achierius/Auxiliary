@@ -1,6 +1,4 @@
-
 #include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include <iostream>
@@ -112,6 +110,8 @@ Mat colorFilter(Mat in, int hMin = 56, int hMax = 96, int sMin = 31, int sMax = 
 		}
 	}
 	merge(channels, 3, in);
+	//	b
+	//	b
 //	delete[] channels;
 	cvtColor(in, in, CV_HSV2BGR);
 	return in;
@@ -279,36 +279,36 @@ int main()
 		Mat * channels = new Mat[3];
 		if (blur == true) {
 			image = gaussianBlur(image, blur_ksize, sigmaX, sigmaY);
-//			imshow("Blur Output", image);
+			imshow("Blur Output", image);
 		}
-		imshow("Blur Output", image);
+//		imshow("Blur Output", image);
 		if (color == true) {
 			image = colorFilter(image, hMin, hMax, sMin, sMax, vMin, vMax, debugMode>0, debugMode>1);
-//			imshow("Color Filter Output", image);
+			imshow("Color Filter Output", image);
 		}
-		imshow("Color Filter Output", image);
+//		imshow("Color Filter Output", image);
 		if (dilate_erode == true) {
 			image = dilateErode(image, holes, noise, element);
-//			imshow("Dilate and Erode Output", image);
+			imshow("Dilate and Erode Output", image);
 		}
-		imshow("Dilate and Erode Output", image);
+//		imshow("Dilate and Erode Output", image);
 		if (edge == true) {
 			image = edgeDetect(image, channels, edge_ksize, threshLow, threshHigh);
-//			imshow("Edge Detection Output", image);
+			imshow("Edge Detection Output", image);
 		}
-		imshow("Edge Detection Output", image);
+//		imshow("Edge Detection Output", image);
 		if (sharpen == true) {
 			image = laplacian(image, channels, ddepth, sharpen_ksize, scale, delta);
-//			imshow("Sharpen Output", image);
+			imshow("Sharpen Output", image);
 		}
-		imshow("Sharpen Output", image);
+//		imshow("Sharpen Output", image);
 		if (hough == true) { 
 			image = houghLines(image, rho, theta, threshold, lineMin, maxGap);
-//			imshow("Hough Lines Output", image);		
+			imshow("Hough Lines Output", image);		
 		}
-		imshow("All Filtered", image);
-		addWeighted(image, weight1, orig, weight2, 3, image);
-		imshow("Final Weighted Average", image);
+//		imshow("All Filtered", image);
+//		addWeighted(image, weight1, orig, weight2, 3, image);
+//		imshow("Final Weighted Average", image);
 //		imshow("Original", orig);
 		delete [] channels;
 		kill = waitKey(5);
