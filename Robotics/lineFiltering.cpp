@@ -1,11 +1,3 @@
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "enumCvType.h"
-#include <iostream>
-
-using namespace cv;
-using namespace std;
-
 int main(int argc, char** argv)
 {
 	VideoCapture camera(0);
