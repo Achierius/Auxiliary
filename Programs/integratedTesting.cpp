@@ -1,11 +1,17 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-
 #include <iostream>
+
+#include "lapacian.h"
+#include "dilateErode.h"
+#include "edgeDetect.h"
+#include "gaussianBlur.h"
+#include "colorFilter.h"
+#include "houghLines.h"
 
 using namespace cv;
 using namespace std;
-
+/*
 Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY); 
 
 Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
@@ -17,19 +23,17 @@ Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int thr
 Mat laplacian(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scale, int delta);
 
 Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap);
-
+*/
+/*
 Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY) 
 {
 	if ((blur_ksize%2 != 1) && (blur_ksize > 1)) // kernel size must be odd and positive
 		blur_ksize = blur_ksize*2+1;
 	GaussianBlur(in, in, Size(blur_ksize, blur_ksize), sigmaX, sigmaY, BORDER_DEFAULT);
 	return in;
-}
-
-//Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
-//{
- 
-Mat colorFilter(Mat in, int hMin = 56, int hMax = 96, int sMin = 31, int sMax = 130, int vMin = 46, int vMax = 103, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
+}*/
+/*
+Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true)
 {
         bool hueAltered = false;
 	bool satAltered = false;
@@ -116,25 +120,8 @@ Mat colorFilter(Mat in, int hMin = 56, int hMax = 96, int sMin = 31, int sMax = 
 	cvtColor(in, in, CV_HSV2BGR);
 	return in;
 }
-
-Mat dilateErode(Mat in, int holes, int noise, Mat element)
-{
-	dilate(in, in, element, Point(-1, -1), holes);
-	erode(in, in, element, Point(-1, -1), holes+noise); //Can use cv::Mat() instead of element for the kernel matrix being used as the third argument 
-	dilate(in, in, element, Point(-1, -1), noise);
-	return in;
-}
-
-Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh)
-{
-	split(image, channels);
-	Canny(image, channels[1], threshLow, threshHigh);
-		channels[0] = channels[1];
-		channels[2] = channels[0];	
-	merge(channels, 3, image);
-	return image;
-}
-
+*/
+/*
 Mat laplacian(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scale, int delta)
 {
 	Mat image_gray, dst, abs_dst;
@@ -148,23 +135,26 @@ Mat laplacian(Mat image, Mat * channels, int ddepth, int sharpen_ksize, int scal
 	merge(channels, 3, abs_dst);
 	addWeighted(image, 1, abs_dst, 2, 0, image); 
 	return image;
-}
-
-Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap)
+}*/
+/*
+Mat dilateErode(Mat in, int holes, int noise, Mat element)
 {
-	Mat writing;
-	
-	writing = in.clone();
-	vector<Vec4i> lines;
-	Canny(in, in, 50, 200, 3); // apparently this is needed to make the next line work - Min Hoo 2/28/15
-	HoughLinesP(in, lines, rho+1, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 ); // something wrong with this line - Min Hoo 2/28/15
-	for( size_t i = 0; i < lines.size(); i++ )
-	{
-		Vec4i l = lines[i];
-		line(writing, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
-	}
-	return writing;
-}
+	dilate(in, in, element, Point(-1, -1), holes);
+	erode(in, in, element, Point(-1, -1), holes+noise); //Can use cv::Mat() instead of element for the kernel matrix being used as the third argument 
+	dilate(in, in, element, Point(-1, -1), noise);
+	return in;
+}*/
+
+/*
+Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh)
+{
+	split(image, channels);
+	Canny(image, channels[1], threshLow, threshHigh);
+		channels[0] = channels[1];
+		channels[2] = channels[0];	
+	merge(channels, 3, image);
+	return image;
+}*/
 
 int main()
 {
@@ -243,18 +233,18 @@ int main()
 	createTrackbar("Kernel Size", "Sharpen Editor", &sharpen_ksize, 9);
 	createTrackbar("Scale", "Sharpen Editor", &scale, 9);
 	createTrackbar("Delta", "Sharpen Editor", &delta, 9);
-
-	// houghLine parameters
+	
+	// houghLines parameters
 	int rho = 1;
 	int theta = 180;
 	int threshold = 49;
 	int lineMin = 9;
 	int maxGap = 49;
-	createTrackbar("Theta", "Hough Lines Editor", &theta, 180);
-	createTrackbar("Rho", "Hough Lines Editor", &rho, 99);
-	createTrackbar("Threshold", "Hough Lines Editor", &threshold, 199);
-	createTrackbar("LineMin", "Hough Lines Editor", &lineMin, 399);
-	createTrackbar("MaxGap", "Hough Lines Editor", &maxGap, 399);
+	createTrackbar("Theta", "Window", &theta, 180);
+	createTrackbar("Rho", "Window", &rho, 100);
+	createTrackbar("Threshold", "Window", &threshold, 199);
+	createTrackbar("LineMin", "Window", &lineMin, 399);
+	createTrackbar("MaxGap", "Window", &maxGap, 399);	
 
 	// video feed
 	VideoCapture camera(0);
