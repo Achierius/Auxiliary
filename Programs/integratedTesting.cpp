@@ -1,17 +1,18 @@
+/*
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
+*/
+#include "RoboLaplacian.h"
+#include "RoboDilateErode.h"
+#include "RoboEdgeDetect.h"
+#include "RoboGaussianBlur.h"
+#include "RoboColorFilter.h"
+#include "RoboHoughLines.h"
 
-#include "lapacian.h"
-#include "dilateErode.h"
-#include "edgeDetect.h"
-#include "gaussianBlur.h"
-#include "colorFilter.h"
-#include "houghLines.h"
-
-using namespace cv;
+/*using namespace cv;
 using namespace std;
-/*
+
 Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY); 
 
 Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
@@ -65,6 +66,7 @@ Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 2
         }
         if(vMin != 0 || vMax != 255)
         {
+	b
 		valAltered = true;
 //               if(DEBUGPRE) imshow("Value-Unfiltered", channels[2]);
                 inRange(channels[2], Scalar(vMin), Scalar(vMax), channels[2]);
@@ -154,8 +156,24 @@ Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int thr
 		channels[2] = channels[0];	
 	merge(channels, 3, image);
 	return image;
-}*/
+}
 
+Mat houghLines(Mat in, int rho, int theta, int threshold, int lineMin, int maxGap)
+{
+	Mat writing;
+	
+	writing = in.clone();
+	vector<Vec4i> lines;
+	Canny(in, in, 50, 200, 3); // apparently this is needed to make the next line work - Min Hoo 2/28/15
+	HoughLinesP(in, lines, rho+1, CV_PI/theta, threshold+1, lineMin+1, maxGap+1 ); // something wrong with this line - Min Hoo 2/28/15
+	for( size_t i = 0; i < lines.size(); i++ )
+	{
+		Vec4i l = lines[i];
+		line(writing, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
+	}
+	return writing;
+}
+*/
 int main()
 {
 	namedWindow("Blur Editor", WINDOW_AUTOSIZE);
