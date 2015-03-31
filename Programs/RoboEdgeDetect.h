@@ -5,9 +5,6 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 
-using namespace cv;
-using namespace std;
-
-Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh);
+cv::Mat edgeDetect(Mat image, Mat * channels, int edge_ksize, int threshLow, int threshHigh);
 
 #endif

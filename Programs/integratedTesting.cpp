@@ -10,9 +10,9 @@
 #include "RoboColorFilter.h"
 #include "RoboHoughLines.h"
 
-/*using namespace cv;
+using namespace cv;
 using namespace std;
-
+/*
 Mat gaussianBlur(Mat in, int blur_ksize, int sigmaX, int sigmaY); 
 
 Mat colorFilter(Mat in, int hMin = 0, int hMax = 255, int sMin = 0, int sMax = 255, int vMin = 0, int vMax = 255, bool DEBUG = false, bool DEBUGPRE = false, bool bitAnd = true);
@@ -283,35 +283,35 @@ int main()
 	while(kill != 's' && kill != 'q')
 	{
 		camera>>image;
-		orig = image.clone();
+		Eorig = image.clone();
 		Mat * channels = new Mat[3];
 		if (blur == true) {
-			image = gaussianBlur(image, blur_ksize, sigmaX, sigmaY);
+			image = roboGaussianBlur(image, blur_ksize, sigmaX, sigmaY);
 			imshow("Blur Output", image);
 		}
 //		imshow("Blur Output", image);
 		if (color == true) {
-			image = colorFilter(image, hMin, hMax, sMin, sMax, vMin, vMax, debugMode>0, debugMode>1);
+			image = roboColorFilter(image, hMin, hMax, sMin, sMax, vMin, vMax, debugMode>0, debugMode>1);
 			imshow("Color Filter Output", image);
 		}
 //		imshow("Color Filter Output", image);
 		if (dilate_erode == true) {
-			image = dilateErode(image, holes, noise, element);
+			image = roboDilateErode(image, holes, noise, element);
 			imshow("Dilate and Erode Output", image);
 		}
 //		imshow("Dilate and Erode Output", image);
 		if (edge == true) {
-			image = edgeDetect(image, channels, edge_ksize, threshLow, threshHigh);
+			image = roboEdgeDetect(image, channels, edge_ksize, threshLow, threshHigh);
 			imshow("Edge Detection Output", image);
 		}
 //		imshow("Edge Detection Output", image);
 		if (sharpen == true) {
-			image = laplacian(image, channels, ddepth, sharpen_ksize, scale, delta);
+			image = roboLaplacian(image, channels, ddepth, sharpen_ksize, scale, delta);
 			imshow("Sharpen Output", image);
 		}
 //		imshow("Sharpen Output", image);
 		if (hough == true) { 
-			image = houghLines(image, rho, theta, threshold, lineMin, maxGap);
+			image = roboHoughLines(image, rho, theta, threshold, lineMin, maxGap);
 			imshow("Hough Lines Output", image);		
 		}
 //		imshow("All Filtered", image);
